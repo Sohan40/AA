@@ -1,0 +1,60 @@
+<%- include('../partials/header') %>
+<div class="container mt-5">
+  <h1>Register</h1>
+
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="card">
+        <div class="card-body">
+
+          <!-- Makes POST request to /register route -->
+          <form action="/register" method="POST">
+            <div class="form-group">
+              <label for="username">Username</label>
+              <input type="text" class="form-control" name="username">
+            </div>
+            <div class="form-group">
+                <label for="email">College E-Mail Id</label>
+                <input type="email" class="form-control" name="email">
+              </div>
+              <div class="form-group">
+                <label for="Roll_No">Roll Number</label>
+                <input type="text" class="form-control" name="roll_No">
+              </div>
+              <div class="form-group">
+                <label for="department">Department</label>
+                <select name="department">
+                  
+                  <option value="Biotechnology">Biotechnology</option>
+                  <option value="Chemical Engineering">Chemical Engineering</option>
+                  <option value="Chemistry">Chemistry</option>
+                  <option value="Civil Engineering">Civil Engineering</option>
+                  <option value="Electrical Engineering">Electrical Engineering</option>
+                  <option value="Computer Science and Engineering">Computer Science and Engineering</option>
+                  <option value="Electronics and Electrical Communication Engineering">Electronics and Electrical Communication Engineering</option>
+                  <option value="Mechanical Engineering">Mechanical Engineering</option>
+                  <option value="Metallurgical and Materials Enginnering">Metallurgical and Materials Enginnering</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="password">Year</label>
+                <select name="year">
+                  <option value="1">1st Year</option>
+                  <option value="2">2nd Year</option>
+                  <option value="3">3rd Year</option>
+                  <option value="4">4th Year</option>
+                </select>
+              </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" name="password">
+            </div>
+            <button type="submit" class="btn btn-dark">Register</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+    <%- include('../partials/footer') %>
