@@ -8,19 +8,15 @@ const Post = require('./posts')
 const clubSchema = new Schema({
     name:{
         type:String,
-        required:true
     },
     description:{
         type:String,
-        required:true
     },
     category:{
         type:String,
-        required:true
     },
     president:{
         type:String,
-        required:true
     },
 
     posts:[{
@@ -29,8 +25,8 @@ const clubSchema = new Schema({
     }],
     email:{
         type:String,
-        required:true
-    }
+    },
+    password:String
 })
 
 clubSchema.plugin(passportLocalMongoose);

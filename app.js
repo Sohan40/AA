@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const express =require('express');
 
-
+const bcrypt = require('bcrypt');
 const ejs=require("ejs");
 
 const session = require("express-session");
@@ -22,6 +22,8 @@ const passportLocalMongoose =require("passport-local-mongoose");
 const { genPassword } = require('./pass/util');
 
 require('./pass/user');
+require('./pass/club');
+
 
 app.use(express.static("public"));
 app.set('view engine','ejs');
@@ -66,7 +68,15 @@ app.get("/register",function(req,res)
 {
     res.render("user/register");
 })
+app.get("/register/club",function(req,res)
+{
+    res.render("clubs/register");
+})
 
+app.get("/login/club",function(req,res)
+{
+    res.render("clubs/login");
+})
 app.post("/login",passport.authenticate('userStrategy',{failureRedirect:'/login',failureMessage:true}),async function(req,res)
 {
     
@@ -74,35 +84,45 @@ app.post("/login",passport.authenticate('userStrategy',{failureRedirect:'/login'
 
 });
 
-app.post("/register",function(req,res)
+app.post("/login/club",passport.authenticate('clubStrategy',{failureRedirect:'/register/club',failureMessage:true}),async function(req,res)
 {
+    
+    res.send('logged IN as club');
+
+});
+
+app.post("/register",async function(req,res)
+{
+    
+    const password = await bcrypt.hashSync(req.body.password,12);
     const newUser = new User({
 
-    email: req.body.email,
-    username:req.body.username,
-    department:req.body.department,
-    year:req.body.year,
-    Roll_No:req.body.roll_No
- })
-    
-
-    User.register(newUser,req.body.password,function(err,user)
-    {
-        
-        if(err)
-        {
-            console.log(err);
-            res.redirect("/register");
-        }
-        else{
-            console.log(user);
-            passport.authenticate("userStrategy")(req,res,function(){
-                    res.redirect("/");
-            })
-            
-        }
-    })
+        email: req.body.email,
+        username:req.body.username,
+        department:req.body.department,
+        year:req.body.year,
+        Roll_No:req.body.roll_No,
+        password:password
+     })
+    newUser.save();
+    res.redirect('/login')
 })
+
+app.post("/register/club",async function(req,res)
+{
+    
+    const password = await bcrypt.hashSync(req.body.password,12);
+    const newUser = new Club({
+
+        email: req.body.email,
+        
+        password:password
+     })
+    newUser.save();
+    res.redirect('/login/club')
+})
+
+
 
 app.listen(3000,()=>{
     console.log("Started");

@@ -4,7 +4,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const User = require('../models/users');
 const {genPassword,validPassword} = require('./util')
-
+const bcrypt = require('bcrypt');
 
 const verifyCallback =  (username,password,done)=>{
    
@@ -13,7 +13,7 @@ const verifyCallback =  (username,password,done)=>{
             if(!user){return done(null,false)}
 
             console.log(user._id)
-            const isValid = validPassword(password,user.salt,user.hash);
+            const isValid = bcrypt.compare(password,user.password);
 
             if(isValid){
                 return done(null,user);
@@ -42,5 +42,3 @@ passport.deserializeUser((studentId,done)=>{
     })
     .catch(err=>done(err))
 })
-
-

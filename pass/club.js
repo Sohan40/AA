@@ -1,25 +1,44 @@
 
-
-
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const CollegeClub = require('./models/CollegeClub');
+const Club = require('../models/clubs');
+const bcrypt = require('bcrypt');
+
+const verifyCallback =  (email,password,done)=>{
+   
+        Club.findOne({email:email})
+        .then((club)=>{
+            if(!club){return done(null,false)}
+
+            console.log(club._id)
+            const isValid = bcrypt.compare(password,club.password);
+
+            if(isValid){
+                return done(null,club);
+            }
+            else{
+                return done(null,false);
+            }
+        })
+        .catch(e=>{
+            done(e)
+        })
+}
+
+const strategy = new LocalStrategy({usernameField:'email'},verifyCallback);
+
+passport.use('clubStrategy', strategy);
+
+passport.serializeUser((club,done)=>{
+    done(null,club._id);
+})
+
+passport.deserializeUser((clubId,done)=>{
+    User.findById(clubId)
+    .then((club)=>{
+        done(null,club)
+    })
+    .catch(err=>done(err))
+})
 
 
-passport.use('clubStrategy', new LocalStrategy( async (username, password, done) => {
-    try {
-        const collegeClub = await CollegeClub.findOne({ username });
-        if (!collegeClub) {
-            return done(null, false, { message: 'Incorrect email or password' });
-        }
-
-        const isMatch = await collegeClub.comparePassword(password);
-        if (!isMatch) {
-            return done(null, false, { message: 'Incorrect email or password' });
-        }
-
-        return done(null, collegeClub);
-    } catch (error) {
-        return done(error);
-    }
-}));
